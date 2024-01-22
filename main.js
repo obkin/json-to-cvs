@@ -1,7 +1,7 @@
-const { exec } = require('child_process');
-const { google } = require('googleapis');
-const { authenticate } = require('@google-cloud/local-auth');
-const fs = require('fs');
+import { exec } from 'child_process';
+import { google } from 'googleapis';
+import { authenticate } from '@google-cloud/local-auth';
+import fs from 'fs';
 
 // --- Converting JSON to cvs ---
 function runDockerScoutCves(imageName, outputFilename) {
@@ -44,8 +44,6 @@ if (!imageName || !outputFilename) {
 } else {
     runDockerScoutCves(imageName, outputFilename);
 }
-
-
 
 // --- Uploading to google drive ---
 async function uploadToGoogleDrive(fileId, filePath, mimeType = 'application/json') {
