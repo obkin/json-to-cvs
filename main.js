@@ -1,4 +1,5 @@
 const { exec } = require('child_process');
+const { google } = require('googleapis');
 const fs = require('fs');
 
 function runDockerScoutCves(imageName, outputFilename) {
