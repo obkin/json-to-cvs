@@ -2,6 +2,9 @@
 /dist
 /node_modules
 .env
+client_credentials.json
+output.json
+output.cvs
 
 # Logs
 logs

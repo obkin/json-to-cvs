@@ -1,7 +1,9 @@
 const { exec } = require('child_process');
 const { google } = require('googleapis');
+const { authenticate } = require('@google-cloud/local-auth');
 const fs = require('fs');
 
+// --- Converting JSON to cvs ---
 function runDockerScoutCves(imageName, outputFilename) {
     const command = `docker scout cves --format sarif --output ${outputFilename}.json ${imageName}`;
 
@@ -33,7 +35,7 @@ function parseJsonToCsv(jsonFilename) {
     console.log('CSV file generated successfully.');
 }
 
-// using
+// --- using ---
 const imageName = process.argv[2];
 const outputFilename = process.argv[3];
 
@@ -42,3 +44,40 @@ if (!imageName || !outputFilename) {
 } else {
     runDockerScoutCves(imageName, outputFilename);
 }
+
+
+
+// --- Uploading to google drive ---
+async function uploadToGoogleDrive(fileId, filePath, mimeType = 'application/json') {
+    try {
+        const auth = await authenticate({
+            keyfilePath: 'json-to-cvs/client_credentials.json', // path to google acc credentials
+            scopes: ['https://www.googleapis.com/auth/drive.file'],
+        });
+
+        const drive = google.drive({ version: 'v3', auth });
+
+        const media = {
+            mimeType,
+            body: fs.createReadStream(filePath),
+        };
+
+        const response = await drive.files.create({
+            requestBody: {
+                name: fileId,
+                mimeType,
+            },
+            media,
+        });
+
+        console.log(`File uploaded successfully. File ID: ${response.data.id}`);
+    } catch (error) {
+        console.error('Error uploading file to Google Drive:', error.message);
+    }
+}
+
+// --- using ---
+const fileId = 'output.cvs'; // google drive file name
+const filePath = 'json-to-cvs/output.json'; // path to file you wanna upload
+
+uploadToGoogleDrive(fileId, filePath);
