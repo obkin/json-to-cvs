@@ -1,0 +1,15 @@
+{
+  "name": "json-to-cvs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js ubuntu output"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "googleapis": "^131.0.0"
+  }
+}
